@@ -1,0 +1,28 @@
+{
+  "message": "hello i18n !!",
+  "components": {
+    "AppDrawer": {
+      "applicationName": "CCMS",
+      "menu": {
+        "apps": "Apps",
+        "dashboard": "Dashboard",
+        "fpcontroller": "Feeder Panel Controller",
+        "logs": "Audit Logs",
+        "reports": "Reports",
+        "powerConsumption": "Power Consumption",
+        "alerts": "Alerts",
+        "system": "System",
+        "configuration": "Configuration",
+        "fpmanager": "Feeder Panels Manager",
+        "umanager": "Users Manager"
+      }
+    },
+    "AppToolbar": {
+      "userMenu": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Sign Out"
+      }
+    }
+  }
+}

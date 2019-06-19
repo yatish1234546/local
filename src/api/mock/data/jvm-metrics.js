@@ -1,0 +1,82 @@
+const metrics = {
+  jvm: {
+    "CodeHeap 'profiled nmethods'": { committed: 2.3134208e7, max: 1.2288e8, used: 2.2870912e7 },
+    'G1 Old Gen': { committed: 8.8080384e7, max: 8.568963072e9, used: 7.0534544e7 },
+    "CodeHeap 'non-profiled nmethods'": {
+      committed: 7602176.0,
+      max: 1.22945536e8,
+      used: 7463040.0,
+    },
+    'G1 Survivor Space': { committed: 2097152.0, max: -1.0, used: 2097152.0 },
+    'Compressed Class Space': { committed: 1.5990784e7, max: 1.073741824e9, used: 1.4361184e7 },
+    Metaspace: { committed: 1.1403264e8, max: -1.0, used: 1.10030072e8 },
+    'G1 Eden Space': { committed: 6.0817408e7, max: -1.0, used: 2.5165824e7 },
+    "CodeHeap 'non-nmethods'": { committed: 2555904.0, max: 5832704.0, used: 1432832.0 },
+  },
+  databases: {},
+  'http.server.requests': {
+    all: { count: 76 },
+    percode: {
+      101: { max: 0.0, mean: 11.48994, count: 5 },
+      200: { max: 0.0, mean: 66.83358590625, count: 64 },
+      401: { max: 0.0, mean: 73.58054285714286, count: 7 },
+    },
+  },
+  cache: {
+    usersByEmail: {
+      'cache.gets.miss': 0.0,
+      'cache.puts': 0.0,
+      'cache.gets.hit': 0.0,
+      'cache.removals': 0.0,
+      'cache.evictions': 0.0,
+    },
+    usersByLogin: {
+      'cache.gets.miss': 2.0,
+      'cache.puts': 2.0,
+      'cache.gets.hit': 5.0,
+      'cache.removals': 0.0,
+      'cache.evictions': 0.0,
+    },
+  },
+  garbageCollector: {
+    'jvm.gc.max.data.size': 8.568963072e9,
+    'jvm.gc.pause': {
+      '0.0': 0.0,
+      '1.0': 0.0,
+      max: 0.0,
+      totalTime: 3.0,
+      mean: 3.0,
+      0.5: 0.0,
+      count: 1,
+      0.99: 0.0,
+      0.75: 0.0,
+      0.95: 0.0,
+    },
+    'jvm.gc.memory.promoted': 5.0711208e7,
+    'jvm.gc.memory.allocated': 4.420796416e9,
+    classesLoaded: 22132.0,
+    'jvm.gc.live.data.size': 6.9898816e7,
+    classesUnloaded: 210.0,
+  },
+  services: {
+    '/websocket/tracker/**': { GET: { max: 0.0, mean: 11.48994, count: 5 } },
+    '/api/users': { GET: { max: 0.0, mean: 54.105699, count: 1 } },
+    '/management/info': { GET: { max: 0.0, mean: 103.54942475, count: 4 } },
+    '/management/jhimetrics': { GET: { max: 0.0, mean: 74.18923485, count: 20 } },
+    '/management/threaddump': { GET: { max: 0.0, mean: 49.734515, count: 20 } },
+    '/api/authenticate': { POST: { max: 0.0, mean: 368.9575005, count: 2 } },
+    root: { GET: { max: 0.0, mean: 73.58054285714286, count: 7 } },
+    '/management/health': { GET: { max: 0.0, mean: 13.23622525, count: 4 } },
+    '/api/account': { GET: { max: 0.0, mean: 58.9641202, count: 5 } },
+    '/**': { GET: { max: 0.0, mean: 30.611325, count: 8 } },
+  },
+  processMetrics: {
+    'system.cpu.usage': 0.3823050180875466,
+    'process.start.time': 1.560148355211e12,
+    'system.cpu.count': 4.0,
+    'process.cpu.usage': 0.010607330139735945,
+    'process.uptime': 2.3030848e7,
+  },
+};
+
+export default metrics;
