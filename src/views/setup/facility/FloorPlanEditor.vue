@@ -1,90 +1,53 @@
 <template lang="html">
 <v-container grid-list-xs,sm,md,lg,xl>
-    <v-stepper non-linear v-model="step">
-        <v-stepper-header>
-            <v-stepper-step editable step="1">
-                Initiate New Plan
-            </v-stepper-step>
+    <v-layout>
+        <v-flex>
+            <form-wizard @on-complete="onComplete" color="#01578b" step-size="md" :start-index="2">
+                <span class="header" slot="title"></span>
+                <tab-content title="Initiate New Plan" icon="fas fa-database" class="tab-content">
+                </tab-content>
+                <tab-content title="Upload Floor Plans" icon="fas fa-compress" :after-change="beforeTabSwitch">
+                    My second tab content
+                </tab-content>
+                <tab-content title="Location and Cluster Mappings" icon="fas fa-map-marker-alt" :before-change="beforeTabSwitch">
+                    <v-layout row wrap class="pa-0 ma-0">
 
-            <v-stepper-step editable step="2">
-                Upload Floor Plans
-            </v-stepper-step>
-
-            <v-stepper-step step="3">
-                Location and Cluster Mappings
-            </v-stepper-step>
-
-            <v-stepper-step step="4">
-                Preview and Finish
-            </v-stepper-step>
-
-        </v-stepper-header>
-        <v-divider></v-divider>
-        <v-stepper-items style="background: transparent">
-            <v-stepper-content step="3">
-                <v-layout row wrap class="pa-0">
-
-                    <v-flex xs12 ma-0 pa-0>
-                        <v-layout row wrap class="ma-0 pa-0">
-                            <v-flex xs12 sm4 class="pa-1" style="margin-top:5px">
-                                <v-select
-                                label="Floors"
-                                v-model="selectedFloor"
-                                :items="floors"
-                                item-text="label"
-                                item-value="index"></v-select>
-                            </v-flex>
-                            <v-flex xs12 sm4 class="pa-1"></v-flex>
-                            <v-flex xs12 sm4 class="pa-1" style="margin-top:45px">
-                                <span class="title secondary--text">Devices and Clusters</span>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                    <div style="">
-                        <v-icon
-                          @click="zoom"
-                          class="icon"
-                          v-bind:class="{ 'icon-active': zoomClicked }">
-                            fas fa-search-plus
-                        </v-icon><br>
-                        <v-icon
-                          @click="save"
-                          class="icon"
-                          v-bind:class="{ 'icon-active': !zoomClicked }">>
-                            fas fa-map-marked-alt
-                        </v-icon>
-                    </div>
-                    <v-flex pa-0>
-                        <v-card>
-                            <div class="mapped-devices-container">
-                                <div class="plan" ref="plan">
-                                  <!-- vuedraggable Library -->
-                                    <draggable
-                                      v-model="mappedDevices"
-                                      :options="{group:'people'}"
-                                      style="height: 400px">
-                                        <template v-for="device in mappedDevices">
-                                            <div :key="device.id" avatar>
-                                            <!-- vue-drag-resize library  -->
-                                                <VueDragResize
-                                                class="drag-class"
-                                                :x="device.left"
-                                                :y="device.top"
-                                                :z="999"
-                                                @clicked="containerRefresh"
-                                                @dragstop="dragStop($event, device.id)"
-                                                v-if="!zoomClicked">
-                                                    <div style="text-align:center">
-                                                        <v-icon
-                                                        small
-                                                        style="margin-left:20px"
-                                                        color="red"
-                                                        @click="cancel(device)">
-                                                            fas fa-times-circle
-                                                        </v-icon> <br>
-                                                        <v-tooltip top>
-                                                            <template v-slot:activator="{ on }">
-                                                                <img
+                        <v-flex xs12 ma-0 pa-0>
+                            <v-layout row wrap class="ma-0 pa-0">
+                                <v-flex xs12 sm4 class="pa-1" style="margin-top:5px">
+                                    <v-select label="Floors" v-model="selectedFloor" :items="floors" item-text="label" item-value="index"></v-select>
+                                </v-flex>
+                                <v-flex xs12 sm4 class="pa-1"></v-flex>
+                                <v-flex xs12 sm4 class="pa-1" style="margin-top:45px">
+                                    <span class="title secondary--text">Devices and Clusters</span>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <div style="">
+                            <v-icon @click="zoom" class="icon" v-bind:class="{ 'icon-active': zoomClicked }">
+                                fas fa-search-plus
+                            </v-icon><br>
+                            <v-icon @click="save" class="icon" v-bind:class="{ 'icon-active': !zoomClicked }">>
+                                fas fa-map-marked-alt
+                            </v-icon>
+                        </div>
+                        <v-flex pa-0>
+                            <v-card>
+                                <div class="mapped-devices-container">
+                                    <div class="plan" ref="plan">
+                                        <!-- vuedraggable Library -->
+                                        <draggable v-model="mappedDevices" :options="{group:'people'}" style="height: 400px">
+                                            <template v-for="device in mappedDevices">
+                                                <div :key="device.id" avatar>
+                                                    <!-- vue-drag-resize library  -->
+                                                    <VueDragResize class="drag-class" :x="device.left" :y="device.top" :z="999" @clicked="containerRefresh" @dragstop="dragStop($event, device.id)" v-if="!zoomClicked">
+                                                        <div style="text-align:center">
+                                                            <v-icon small style="margin-left:20px" color="red" @click="cancel(device)">
+                                                                fas fa-times-circle
+                                                            </v-icon> <br>
+                                                            <v-tooltip top>
+                                                                <template v-slot:activator="{ on }">
+                                                                    <img
                                                                 v-on="on"
                                                                 class="pin"
                                                                 src="../../../../public/img/pin.jpg"
@@ -92,269 +55,244 @@
                                                                 height="30"
                                                                 alt="">
                                                             </template>
-                                                                <div>
-                                                                  <span>
+                                                                    <div>
+                                                                        <span>
                                                                     {{device.type}}
                                                                   </span> <br>
-                                                                  <span>
+                                                                        <span>
                                                                     {{device.modelType}}
                                                                   </span><br>
-                                                                    <span>
+                                                                        <span>
                                                                       {{device.model}}
                                                                     </span><br>
-                                                                    <span>
+                                                                        <span>
                                                                       MAC: {{device.macAddress}}
                                                                     </span><br>
-                                                                    <span>
+                                                                        <span>
                                                                       IP: {{device.ipAddress}}
                                                                     </span>
-                                                                  </div>
-                                                        </v-tooltip>
-                                                    </div>
-                                                </VueDragResize>
-                                            </div>
-                                        </template>
-                                    </draggable>
+                                                                    </div>
+                                                            </v-tooltip>
+                                                        </div>
+                                                    </VueDragResize>
+                                                </div>
+                                            </template>
+                                        </draggable>
+                                    </div>
                                 </div>
-                            </div>
-                        </v-card>
-                    </v-flex>
-                    <v-flex xs4 grow pa-0 @mouseover="containerRefresh">
-                        <v-subheader style="background:grey">
-                            DEVICES LIST
-                        </v-subheader>
-                        <v-layout row wrap class="ma-0 pa-0">
-                            <v-flex xs12 sm12 class="ma-0 align">
-                                <v-text-field
-                                  label="Search Device"
-                                  v-model="searchInput"
-                                  v-on:keyup="search">
-                                </v-text-field>
-                            </v-flex>
-                            <v-flex xs12 sm6 class="ma-0 align">
-                                <v-select
-                                  label="Type"
-                                  @change="filterDevices"
-                                  v-model="selectedType"
-                                  :items="deviceTypes"
-                                  item-text="label"
-                                  item-value="index">
-                                </v-select>
-                            </v-flex>
-                            <v-flex xs12 sm6 class="ma-0 align">
-                                <v-select
-                                  label="Assignment"
-                                  @change="filterDevices"
-                                  v-model="selectedAssignment"
-                                  :items="locations"
-                                  item-text="name"
-                                  item-value="id">
-                                </v-select>
-                            </v-flex>
-                        </v-layout>
-                        <v-list style="overflow-y:scroll; height:150px" class="ma-0 pa-0">
+                            </v-card>
+                        </v-flex>
+                        <v-flex xs4 grow pa-0 @mouseover="containerRefresh" style="border:0.5px solid grey">
+                            <v-subheader style="background:grey">
+                                DEVICES LIST
+                            </v-subheader>
+                            <v-layout row wrap class="ma-0 pa-0">
+                                <v-flex xs12 sm12 class="ma-0 align">
+                                    <v-text-field label="Search Device" v-model="searchInput" v-on:keyup="search">
+                                    </v-text-field>
+                                </v-flex>
+                                <v-flex xs12 sm6 class="ma-0 align">
+                                    <v-select label="Type" @change="filterDevices" v-model="selectedType" :items="deviceTypes" item-text="label" item-value="index">
+                                    </v-select>
+                                </v-flex>
+                                <v-flex xs12 sm6 class="ma-0 align">
+                                    <v-select label="Assignment" @change="filterDevices" v-model="selectedAssignment" :items="locations" item-text="name" item-value="id">
+                                    </v-select>
+                                </v-flex>
+                            </v-layout>
+                            <v-list style="overflow-y:scroll; height:150px" class="ma-0 pa-0">
 
-                            <draggable
-                              @change="popElement"
-                              :move="mousePosition"
-                              :value="deviceList"
-                              :options="{ group: 'people' }">
-                                <template v-for="device in deviceList">
-                                    <v-list-tile :key="device.id" avatar class="ma-0 pa-0">
-                                        <v-list-tile-avatar>
-                                            <img
+                                <draggable @change="popElement" :move="mousePosition" :value="deviceList" :options="{ group: 'people' }">
+                                    <template v-for="device in deviceList">
+                                        <v-list-tile :key="device.id" avatar class="ma-0 pa-0 tile">
+                                            <v-list-tile-avatar>
+                                                <img
                                               src="../../../../public/img/device-image.png">
                                         </v-list-tile-avatar>
-                                        <div style="font-size:12px">
-                                            <span> {{device.type}}</span> |
-                                            <span> {{device.modelType}}</span> |
-                                            <span>{{device.model}}</span> |
-                                            <span>MAC: {{device.macAddress}}</span> |
-                                            <span>IP: {{device.ipAddress}}</span>
-                                        </div>
+                                                <div style="font-size:12px">
+                                                    <span> {{device.type}}</span> |
+                                                    <span> {{device.modelType}}</span> |
+                                                    <span>{{device.model}}</span> |
+                                                    <span>MAC: {{device.macAddress}}</span> |
+                                                    <span>IP: {{device.ipAddress}}</span>
+                                                </div>
+
+                                        </v-list-tile>
+
+                                    </template>
+                                </draggable>
+                            </v-list>
+
+                            <v-subheader style="background:grey">
+                                CLUSTERS
+                            </v-subheader>
+                            <v-layout row wrap class="ma-0 pa-0">
+                                <v-flex xs12 sm4 class="ma-0">
+                                    <v-text-field style="height:5px" label="Search Cluster">
+                                    </v-text-field>
+                                </v-flex>
+                                <v-flex xs12 sm3 class="ma-0 pa-0">
+
+                                    <v-btn depressed @click="clusterDialog=true; zoomClicked=true">
+                                        <v-icon small class="ma-1 pa-0">
+                                            fas fa-plus-circle
+                                        </v-icon>New
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12 sm3 class="ma-0 pa-0">
+                                    <v-btn depressed>Date Created</v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <v-list style="overflow-y:scroll; height:150px; " class="ma-0 pa-0 ">
+                                <template v-for="cluster in clusters ">
+                                    <v-list-tile :key="cluster.name" class="ma-0 pa-0 tile" @click="highlightDevices(cluster)">
+                                        <span> {{cluster.name}} </span>
                                     </v-list-tile>
                                 </template>
-                            </draggable>
-                        </v-list>
+                            </v-list>
+                        </v-flex>
+                        <v-dialog v-model="dialog" width="500" height="400" persistent>
 
-                        <v-subheader style="background:grey">
-                            CLUSTERS
-                        </v-subheader>
-                        <v-layout row wrap class="ma-0 pa-0">
-                            <v-flex xs12 sm4 class="ma-0 align">
-                                <v-text-field
-                                  label="Search Cluster">
-                                </v-text-field>
-                            </v-flex>
-                            <v-flex xs12 sm3 class="ma-1 pa-1">
-                                <v-btn depressed>
-                                    <v-icon small class="ma-1 pa-0">
-                                        fas fa-plus-circle
-                                    </v-icon>New
-                                </v-btn>
-                            </v-flex>
-                            <v-flex xs12 sm3 class="ma-1 pa-1">
-                                <v-btn depressed>Date Created</v-btn>
-                            </v-flex>
-                        </v-layout>
-                        <v-list style="overflow-y:scroll; height:150px" class="ma-0 pa-0">
+                            <v-card>
+                                <v-card-title class="headline secondary title white--text" primary-title>
+                                    <v-layout>
+                                        <v-flex xs11 sm11>
+                                            {{selectedDevice.modelType}} {{selectedDevice.type}} Strip
+                                        </v-flex>
+                                        <v-flex xs1 sm1 @click="cancelDialog" style="cursor:pointer"> &times; </v-flex>
+                                    </v-layout>
 
-                            <draggable
-                              @change="popElement"
-                              :move="mousePosition"
-                              v-model="clusters"
-                              :options="{ group: 'people' }">
-                                <template v-for="device in clusters ">
-                                    <v-list-tile :key="device.id" avatar class="ma-0 pa-0">
-                                        <v-list-tile-avatar>
-                                            <img src="../../../../public/img/device-image.png">
-                                        </v-list-tile-avatar>
-                                        <div style="font-size:12px">
-                                          <span> {{device.type}}</span> |
-                                          <span> {{device.modelType}}</span> |
-                                          <span>{{device.model}}</span> |
-                                          <span>MAC: {{device.macAddress}}</span> |
-                                          <span>IP: {{device.ipAddress}}</span>
-                                        </div>
-                                    </v-list-tile>
-                                </template>
-                            </draggable>
-                        </v-list>
-                    </v-flex>
-                     <v-dialog
-                        v-model="dialog"
-                        width="500"
-                        height="400"
-                        persistent
-                      >
+                                </v-card-title>
 
-                        <v-card>
-                          <v-card-title
-                            class="headline green lighten-2"
-                            primary-title
-                          >
-                          {{selectedDevice.modelType}} {{selectedDevice.type}} Strip
-                          &times;
-                          </v-card-title>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:5px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            Device type:
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="margin-left:-20px">
+                                        <v-select disabled style="font-weight: bold" v-model="selectedDevice.type" :items="[selectedDevice.type]">
+                                        </v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            Device Name:
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
+                                        <v-select style="font-weight: bold" v-model="selectedDevice.modelType" :items="[selectedDevice.modelType]">
+                                        </v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            Make and Model:
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 style="font-size:15px;margin-top:20px;font-weight: bold">
+                                        <p>
+                                            {{selectedDevice.name}} {{selectedDevice.model}}
+                                        </p>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            MAC Address:
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 style="font-size:15px;margin-top:20px;font-weight: bold">
+                                        <p>
+                                            {{selectedDevice.macAddress}}
+                                        </p>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            IP Address:
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
+                                        <v-select style="font-weight: bold" v-model="selectedDevice.ipAddress" :items="[selectedDevice.ipAddress]">
+                                        </v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            Cluster
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
+                                        <v-select style="font-weight: bold" v-model="selectedCluster" :items="clusterNames">
+                                        </v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:18px">
+                                            Location
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
+                                        <v-select style="font-weight: bold" v-model="selectedDevice.type" :items="[selectedDevice.type]">
+                                        </v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <v-divider></v-divider>
 
-                          <v-layout row wrap class="pa-0"  style="margin-left: 5px;margin-top:5px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                Device type:
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
-                                <v-select
-                                disabled
-                                 style="font-weight: bold"
-                                  v-model="selectedDevice.type"
-                                  :items="[selectedDevice.type]"
-                                  >
-                                </v-select>
-                            </v-flex>
-                            </v-layout>
-                           <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                Device Name:
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
-                                <v-select
-                                  style="font-weight: bold"
-                                  v-model="selectedDevice.modelType"
-                                  :items="[selectedDevice.modelType]"
-                                  >
-                                </v-select>
-                            </v-flex>
-                            </v-layout>
-                             <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                Make and Model:
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 style="font-size:15px;margin-top:20px;font-weight: bold" >
-                               <p>
-                                 {{selectedDevice.name}} {{selectedDevice.model}}
-                                </p>
-                            </v-flex>
-                            </v-layout>
-                             <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                MAC Address:
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 style="font-size:15px;margin-top:20px;font-weight: bold">
-                               <p>
-                                 {{selectedDevice.macAddress}}
-                                </p>
-                            </v-flex>
-                            </v-layout>
-                             <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                IP Address:
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
-                                <v-select
-                                 style="font-weight: bold"
-                                  v-model="selectedDevice.ipAddress"
-                                  :items="[selectedDevice.ipAddress]"
-                                  >
-                                </v-select>
-                            </v-flex>
-                            </v-layout>
-                             <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:20px">
-                                Cluster
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
-                                <v-select
-                                 style="font-weight: bold"
-                                  v-model="selectedDevice.type"
-                                  :items="clusters"
-                                  >
-                                </v-select>
-                            </v-flex>
-                            </v-layout>
-                             <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:-35px">
-                            <v-flex xs12 sm4 class="ma-0">
-                              <p style="font-size:15px; margin-top:18px">
-                                Location
-                              </p>
-                            </v-flex>
-                            <v-flex xs12 sm7 class="ma-0" style="mrgin-left:-20px">
-                                <v-select
-                                 style="font-weight: bold"
-                                  v-model="selectedDevice.type"
-                                  :items="[selectedDevice.type]"
-                                  >
-                                </v-select>
-                            </v-flex>
-                            </v-layout>
-                          <v-divider></v-divider>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn class="secondary" flat @click="saveDeviceDetails">
+                                        save
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="clusterDialog" width="500" height="500" persistent>
 
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                             style="background: #81c784;"
-                              flat
-                              @click="saveDeviceDetails"
-                            >
-                              save
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                </v-layout>
-            </v-stepper-content>
-        </v-stepper-items>
-    </v-stepper>
+                            <v-card>
+                                <v-card-title class="headline secondary title white--text" primary-title>
+                                    <v-layout>
+                                        <v-flex xs11 sm11>
+                                            Create Cluster
+                                        </v-flex>
+                                        <v-flex xs1 sm1 @click="clusterDialog=false;zoomClicked=false" style="cursor:pointer"> &times; </v-flex>
+                                    </v-layout>
+
+                                </v-card-title>
+
+                                <v-layout row wrap class="pa-0" style="margin-left: 5px;margin-top:5px">
+                                    <v-flex xs12 sm4 class="ma-0">
+                                        <p style="font-size:15px; margin-top:20px">
+                                            Name
+                                        </p>
+                                    </v-flex>
+                                    <v-flex xs12 sm7 class="ma-0" style="margin-left:-20px">
+                                        <v-text-field label="Name" v-model="clusterDetails.name">
+                                        </v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn class="secondary" flat @click="createCluster">
+                                        save
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-layout>
+                </tab-content>
+                <tab-content title="Preview and Finish" icon="far fa-eye">
+                    Yuhuuu! This seems pretty damn simple
+                </tab-content>
+            </form-wizard>
+        </v-flex>
+    </v-layout>
 
 </v-container>
 </template>
@@ -365,21 +303,30 @@ import VueDragResize from "vue-drag-resize";
 import panzoom from "panzoom";
 import MutationTypes from "@/state/mutation-types";
 import _ from "lodash";
-
+import { FormWizard, TabContent } from "vue-form-wizard";
+import "vue-form-wizard/dist/vue-form-wizard.min.css";
 export default {
   name: "floor-plan-editor",
   components: {
     draggable,
-    VueDragResize
+    VueDragResize,
+    FormWizard,
+    TabContent
   },
   data() {
     return {
-      step: 3,
       searchInput: "",
       selectedFloor: -1,
       selectedType: "All Types",
       selectedAssignment: "All",
       dialog: false,
+      clusterDialog: false,
+      clusterDetails: {
+        name: "",
+        devices: [],
+        onState: false,
+        state: {}
+      },
       selectedDevice: {
         id: 10202,
         type: "LED",
@@ -408,64 +355,43 @@ export default {
       // Mock Data for clusters
       clusters: [
         {
-          id: 10202,
-          type: "LED",
-          serialNo: 19707,
-          name: "MHT-124",
-          vendor: "MHT",
-          model: "MHTi-VOLS-SC-2x2-25",
-          modelType: "Luminaire",
-          hwVersion: "1.0",
-          swVersion: "1.0",
-          connectivity: "online",
-          location: {
-            id: "002",
-            name: "005-001-S3-D-F1-079",
-            path: "",
-            floorIndex: 1
-          },
-          custom: {
-            brightness: 50,
-            onStatus: "ON",
-            wattage: 10
-          },
-          macAddress: "FE:C3:A6:73:60:00",
-          ipAddress: "241.39.62.108",
-          top: 230,
-          left: 69
+          id: 1,
+          name: "Floor A",
+          devices: [],
+          onState: true,
+          state: {
+            led: {
+              preset: false,
+              scene: "",
+              custom: {
+                dimness: 80,
+                color: 3500
+              }
+            }
+          }
         },
-
         {
-          id: 10203,
-          type: "LED",
-          serialNo: 19707,
-          name: "MHT-124",
-          vendor: "MHT",
-          model: "MHTi-VOLS-SC-2x2-25",
-          modelType: "Luminaire",
-          hwVersion: "1.0",
-          swVersion: "1.0",
-          connectivity: "online",
-          location: {
-            id: "002",
-            name: "005-001-S3-D-F1-079",
-            path: "",
-            floorIndex: 1
-          },
-          custom: {
-            brightness: 50,
-            onStatus: "ON",
-            wattage: 10
-          },
-          macAddress: "FE:C3:A6:73:60:00",
-          ipAddress: "241.39.62.108",
-          top: 220,
-          left: 688
+          id: 2,
+          name: "Floor 1A",
+          devices: [],
+          onState: true,
+          state: {
+            led: {
+              preset: false,
+              scene: "",
+              custom: {
+                dimness: 80,
+                color: 3500
+              }
+            }
+          }
         }
       ],
       mappedDevices: [],
       deviceList: [],
       deviceTypes: [],
+      clusterNames: [],
+      selectedCluster: "",
       locations: ["All", "Assigned", "Unassigned"],
       data: [],
       zoomPaused: false,
@@ -484,6 +410,8 @@ export default {
       ];
     });
 
+    this.clusterNames = [...this.clusters.map(cluster => cluster.name)];
+    this.selectedCluster = this.clusterNames[0];
     // Get the stored location/positions for the devices that are mapped.
     this.mappedDevices.forEach(item => {
       const storedData = JSON.parse(localStorage.getItem(item.id));
@@ -515,6 +443,15 @@ export default {
     }
   },
   methods: {
+    onComplete() {
+      alert("Yay. Done!");
+    },
+    beforeTabSwitch() {
+      this.$router.push({
+        path: "commissioning"
+      });
+      return true;
+    },
     matcher(regexp) {
       return obj => {
         let found = false;
@@ -544,13 +481,14 @@ export default {
 
     popElement(event) {
       // Remove element from the Device List when dragged and dropped
+      this.dialog = true;
       this.selectedDevice = event.removed.element;
       const index = this.data.findIndex(
         device => device.id === event.removed.element.id
       );
       if (index !== undefined) this.data.splice(index, 1);
       this.filterDevices();
-      this.dialog = true;
+
       this.zoomClicked = true;
     },
 
@@ -578,9 +516,26 @@ export default {
       this.deviceList = dvcs;
     },
     saveDeviceDetails() {
+      this.clusters.forEach(cluster => {
+        if (cluster.name === this.selectedCluster) {
+          cluster.devices.push(this.selectedDevice);
+        }
+      });
       this.selectedDevice = {};
       this.zoomClicked = false;
       this.dialog = false;
+    },
+    createCluster() {
+      this.clusters.push(Object.assign({}, this.clusterDetails));
+      this.clusterNames = [...this.clusters.map(cluster => cluster.name)];
+      this.clusterDetails = {
+        name: "",
+        devices: [],
+        onState: false,
+        state: {}
+      };
+      this.clusterDialog = false;
+      this.zoomClicked = false;
     },
     zoom() {
       // Zoom and Pan functionality. please check panzoom library documentation for more information
@@ -600,6 +555,10 @@ export default {
       this.zoomClicked = false;
       this.controller.pause();
     },
+    cancelDialog() {
+      this.cancel(this.selectedDevice);
+      this.dialog = false;
+    },
     cancel(dvc) {
       const index = this.mappedDevices.findIndex(
         device => device.id === dvc.id
@@ -608,6 +567,9 @@ export default {
       if (index !== undefined) this.mappedDevices.splice(index, 1);
       this.data.push(dvc);
       this.deviceList = this.data;
+    },
+    highlightDevices(cluster) {
+      this.mappedDevices = cluster.devices;
     },
     containerRefresh() {
       panzoom(this.$refs.plan, {
@@ -650,6 +612,7 @@ export default {
   overflow: hidden;
   text-align: center;
 }
+
 .icon-active {
   background: #16a085;
   color: white;
@@ -675,6 +638,14 @@ export default {
   width: auto !important;
   height: auto !important;
   overflow: hidden;
+}
+
+.tile {
+  border-bottom: 0.3px solid grey !important;
+}
+
+.tile:active {
+  background: #01578b;
 }
 
 .vdr.active:before {
