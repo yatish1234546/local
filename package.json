@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "chance": "^1.0.18",
     "chart.js": "^2.8.0",
     "chartjs-plugin-colorschemes": "^0.3.0",
